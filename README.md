@@ -1,44 +1,58 @@
 # devops
+# lesson-5 — Terraform AWS: S3 backend, VPC, ECR
 
-# 🐳 Django + PostgreSQL + Nginx (Dockerized Project)
+## Structure
+lesson-5/
+├── main.tf
+├── backend.tf
+├── outputs.tf
+├── modules/
+│   ├── s3-backend/
+│   │   ├── s3.tf
+│   │   ├── dynamodb.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── vpc/
+│   │   ├── vpc.tf
+│   │   ├── routes.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   └── ecr/
+│       ├── ecr.tf
+│       ├── variables.tf
+│       └── outputs.tf
 
-This project demonstrates a simple **Dockerized web application** that uses:
-- **Django** — as the main web framework  
-- **PostgreSQL** — as the relational database  
-- **Nginx** — as a reverse proxy and web server  
+## Commands
+terraform init
+terraform plan
+terraform apply -auto-approve
+# після створення backend.tf:
+terraform init -migrate-state
+terraform destroy
 
-It was created as part of the **Linux Administration / DevOps homework** task to practice containerization and service orchestration with **Docker Compose**.
+## Notes
+- S3 для стейту: версіювання + шифрування, DynamoDB для блокування.
+- VPC: 3 public + 3 private підмережі, IGW, 1 NAT, таблиці маршрутів.
+- ECR: репозиторій зі scan-on-push та lifecycle policy (10 останніх образів).
 
----
 
-## 🧩 Project Structure
+## Commands
 
+# 1) First run (local state)
+terraform init
+terraform plan
+terraform apply -auto-approve
 
----
+# 2) Enable remote backend after S3+DynamoDB exist:
+#    - Update backend.tf with your unique bucket name and the region/table.
+terraform init -migrate-state
 
-## ⚙️ Services Overview
+# 3) Normal workflow
+terraform plan
+terraform apply
 
-| Service | Description | Exposed Port |
-|----------|--------------|--------------|
-| **db** | PostgreSQL database | 5432 |
-| **django** | Django web app | 8000 (internal) |
-| **nginx** | Reverse proxy for Django | 80 (external) |
+# 4) Destroy (remember: if this bucket is your backend, migrate back to local first)
+#    a) mv backend.tf backend.tf.disabled && terraform init -reconfigure
+#    b) terraform destroy -auto-approve
 
-All services run in isolated containers defined in `compose.yaml`.
-
----
-
-## 🧾 Environment Variables
-
-Create a `.env` file in the project root with the following content:
-
-```env
-POSTGRES_DB=app_db
-POSTGRES_USER=app_user
-POSTGRES_PASSWORD=app_password
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-
-DJANGO_SECRET_KEY=dev-insecure-key
-DJANGO_DEBUG=1
-DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+- S3 bucket sets `force_destroy = true`, so Terraform will empty the bucket (including object versions) during destroy.
