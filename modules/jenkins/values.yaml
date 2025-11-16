@@ -63,7 +63,7 @@ controller:
                 serverCertificate: ""
                 skipTlsVerify: false
       job-dsl: |
-        unclassified:
+        jenkins:
           globalJobDslSecurityConfiguration:
             useScriptSecurity: false
       credentials: |
