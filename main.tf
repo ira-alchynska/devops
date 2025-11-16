@@ -102,7 +102,7 @@ module "argo_cd" {
   github_repo_url   = var.github_repo_url
   github_user       = var.github_user
   github_pat        = var.github_pat
-  app_target_revision = "lesson-8-9"
+  app_target_revision = "main"
   depends_on        = [module.eks]
   providers         = {
     helm       = helm
