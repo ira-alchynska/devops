@@ -31,11 +31,11 @@ Edit `terraform.tfvars` with your configuration:
 
 ```hcl
 # AWS Configuration
-region = "eu-central-1"
-cluster_name = "eks-cluster-ira"
-vpc_name = "vpc-ira"
+region = "your-region"
+cluster_name = "your-cluster-name"
+vpc_name = "your-vpc-name"
 instance_type = "t2.medium"
-repository_name = "ecr-repo-18062025214500"
+repository_name = "your-repo-name"
 
 # GitHub Configuration
 github_user = "your-github-username"
@@ -99,19 +99,19 @@ Jenkins is accessible via LoadBalancer. Get the URL:
 kubectl get svc -n jenkins jenkins -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
 ```
 
-Default credentials:
-- **Username:** `admin`
-- **Password:** `admin123`
-
-Or get the password from Kubernetes secret:
+Get the password from Kubernetes secret:
 
 ```bash
 kubectl get secret -n jenkins jenkins -o jsonpath='{.data.jenkins-admin-password}' | base64 -d && echo
 ```
 
+Default credentials:
+- **Username:** `admin`
+- **Password:** (from command above)
+
 ### Jenkins Setup
 
-1. Access Jenkins UI at: `http://<loadbalancer-hostname>`
+1. Access Jenkins UI with previous received URL
 2. Login with admin credentials
 3. The `seed-job` should already be created
 4. Run the `seed-job` to create the `goit-django-docker` pipeline
@@ -139,7 +139,7 @@ Default credentials:
 - **Username:** `admin`
 - **Password:** (from command above)
 
-Access Argo CD UI at: `http://<loadbalancer-hostname>`
+Access Argo CD UI with previous received URL.
 
 ## CI/CD Pipeline Workflow
 
@@ -181,7 +181,7 @@ The application `django-app` should appear in Argo CD UI and automatically sync 
 ```
 .
 ├── main.tf                 # Main Terraform configuration
-├── backend.tf             # Terraform backend (S3 + DynamoDB)
+├── backend.tf              # Terraform backend (S3 + DynamoDB)
 ├── variables.tf            # Terraform variables
 ├── outputs.tf              # Terraform outputs
 ├── terraform.tfvars        # Your variable values (gitignored)
