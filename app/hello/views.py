@@ -37,8 +37,7 @@ def hello_world(request):
         <body>
             <div class="container">
                 <h1>Lesson 8 & 9</h1>
-                <p>Welcome to Django with PostgreSQL and Nginx!</p>
-                <p>This application is running in Docker containers.</p>
+                <p>This lesson contains Jenkins & ArgoCD!</p>
             </div>
         </body>
     </html>
