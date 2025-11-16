@@ -35,5 +35,5 @@ variable "github_pat" {
 variable "app_target_revision" {
   description = "Git branch/tag for Argo CD application"
   type        = string
-  default     = "lesson-9"
+  default     = "lesson-8-9"
 }
