@@ -45,6 +45,23 @@ controller:
 
   JCasC:
     configScripts:
+      kubernetes-cloud: |
+        jenkins:
+          clouds:
+            - kubernetes:
+                name: "kubernetes"
+                serverUrl: ""
+                namespace: "jenkins"
+                jenkinsUrl: "http://jenkins:8080"
+                jenkinsTunnel: "jenkins-agent:50000"
+                containerCap: 10
+                maxRequestsPerHost: 32
+                retentionTimeout: 5
+                connectTimeout: 10
+                readTimeout: 15
+                credentialsId: ""
+                serverCertificate: ""
+                skipTlsVerify: false
       credentials: |
         credentials:
           system:

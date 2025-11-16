@@ -4,20 +4,17 @@
 
 ## Terraform
 
-Ініціалізація Terraform:
-
+Initialize Terraform:
 ```bash
 terraform init
 ```
 
 Перевірка змін:
-
 ```bash
 terraform plan
 ```
 
 Застосування змін:
-
 ```bash
 terraform apply
 ```
