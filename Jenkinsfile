@@ -51,9 +51,10 @@ spec:
             
             echo "Building and pushing to: $ECR_REGISTRY/$IMAGE_NAME:$IMAGE_TAG"
             
+            # Build context should be the app directory where Dockerfile and requirements.txt are located
             /kaniko/executor \\
-              --context `pwd` \\
-              --dockerfile `pwd`/app/Dockerfile \\
+              --context `pwd`/app \\
+              --dockerfile Dockerfile \\
               --destination=$ECR_REGISTRY/$IMAGE_NAME:$IMAGE_TAG \\
               --cache=true \\
               --insecure \\

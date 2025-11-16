@@ -33,6 +33,17 @@ controller:
     - docker-workflow:latest
     - job-dsl:latest
 
+  initScripts:
+    - |
+      import javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration
+      import jenkins.model.Jenkins
+      
+      Jenkins jenkins = Jenkins.getInstance()
+      GlobalJobDslSecurityConfiguration config = GlobalJobDslSecurityConfiguration.get()
+      config.useScriptSecurity = false
+      config.save()
+      jenkins.save()
+
   serviceAccount:
     name: jenkins-sa
     create: false
@@ -62,10 +73,15 @@ controller:
                 credentialsId: ""
                 serverCertificate: ""
                 skipTlsVerify: false
-      job-dsl: |
+      global-properties: |
         jenkins:
-          globalJobDslSecurityConfiguration:
-            useScriptSecurity: false
+          globalNodeProperties:
+            - envVars:
+                env:
+                  - key: "ECR_REPOSITORY_URL"
+                    value: "${ecr_repository_url}"
+                  - key: "GITHUB_REPO_URL"
+                    value: "${github_repo_url}"
       credentials: |
         credentials:
           system:
