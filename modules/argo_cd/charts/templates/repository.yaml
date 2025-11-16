@@ -7,10 +7,10 @@ metadata:
   labels:
     argocd.argoproj.io/secret-type: repository
 stringData:
-  url: {{ .url }}
-  username: {{ .username }}
-  password: {{ .password }}
+  url: {{ .url | quote }}
+  username: {{ .username | quote }}
+  password: {{ .password | quote }}
   insecure: "{{ $.Values.repoConfig.insecure }}"
   enableLfs: "{{ $.Values.repoConfig.enableLfs }}"
 ---
-{{ - end }}
+{{- end }}

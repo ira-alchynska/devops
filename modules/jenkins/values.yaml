@@ -37,6 +37,12 @@ controller:
     name: jenkins-sa
     create: false
 
+  env:
+    - name: ECR_REPOSITORY_URL
+      value: "${ecr_repository_url}"
+    - name: GITHUB_REPO_URL
+      value: "${github_repo_url}"
+
   JCasC:
     configScripts:
       credentials: |

@@ -79,6 +79,15 @@ resource "aws_iam_role_policy" "jenkins_ecr_policy" {
   })
 }
 
+locals {
+  jenkins_values = templatefile("${path.module}/values.yaml", {
+    github_user       = var.github_user
+    github_pat        = var.github_pat
+    github_repo_url   = var.github_repo_url
+    ecr_repository_url = var.ecr_repository_url
+  })
+}
+
 resource "helm_release" "jenkins" {
   name             = "jenkins"
   namespace        = "jenkins"
@@ -88,7 +97,7 @@ resource "helm_release" "jenkins" {
   create_namespace = false
 
   values = [
-    file("${path.module}/values.yaml")
+    local.jenkins_values
   ]
 }
 

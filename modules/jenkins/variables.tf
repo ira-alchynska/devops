@@ -35,3 +35,8 @@ variable "github_repo_url" {
   description = "GitHub repository URL"
   type        = string
 }
+
+variable "ecr_repository_url" {
+  description = "ECR repository URL for Docker images"
+  type        = string
+}

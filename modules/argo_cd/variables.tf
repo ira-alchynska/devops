@@ -15,3 +15,25 @@ variable "chart_version" {
   type        = string
   default     = "5.46.4"
 }
+
+variable "github_repo_url" {
+  description = "GitHub repository URL for Argo CD to monitor"
+  type        = string
+}
+
+variable "github_user" {
+  description = "GitHub username for repository access"
+  type        = string
+}
+
+variable "github_pat" {
+  description = "GitHub Personal Access Token"
+  type        = string
+  sensitive   = true
+}
+
+variable "app_target_revision" {
+  description = "Git branch/tag for Argo CD application"
+  type        = string
+  default     = "lesson-9"
+}
