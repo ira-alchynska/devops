@@ -52,7 +52,7 @@ rds_publicly_accessible = false
 rds_aurora_engine = "aurora-postgresql"
 
 # Aurora engine version (must match available versions)
-rds_aurora_engine_version = "15.3"
+rds_aurora_engine_version = "15.13"
 
 # Aurora parameter group family (must match engine major version)
 rds_aurora_parameter_group_family = "aurora-postgresql15"

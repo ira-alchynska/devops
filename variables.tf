@@ -117,7 +117,7 @@ variable "rds_aurora_engine" {
 variable "rds_aurora_engine_version" {
   description = "Engine version for Aurora RDS"
   type        = string
-  default     = "15.3"
+  default     = "15.13"
 }
 
 variable "rds_aurora_parameter_group_family" {
