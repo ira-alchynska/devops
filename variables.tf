@@ -32,7 +32,7 @@ variable "instance_type" {
 variable "repository_name" {
   description = "Name of the ECR repository"
   type        = string
-  default     = "ecr-repo-18062025214500"
+  default     = "ecr-repo-ira"
 }
 
 // github credentials

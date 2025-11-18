@@ -1,0 +1,67 @@
+# Copy this file to terraform.tfvars and fill in the required values
+
+# AWS region where resources will be deployed (must match availability zones in main.tf)
+region = "eu-central-1"
+
+# Project name used as prefix for resource names
+name = "django-app-alex"
+
+# EC2 instance type for EKS worker nodes
+instance_type = "t2.medium"
+
+# ECR repository name (must be unique within AWS account)
+repository_name = "ecr-repo-ira"
+
+# GitHub Personal Access Token (create at https://github.com/settings/tokens)
+github_pat = "ghp_your_personal_access_token_here"
+
+# GitHub username
+github_user = "your-github-username"
+
+# GitHub repository URL
+github_repo_url = "https://github.com/username/your-repo.git"
+
+# GitHub branch name for Jenkins
+github_branch = "main"
+
+# Database password (REQUIRED - keep secret, never commit)
+rds_password = "CHANGE_ME_SECURE_PASSWORD_HERE"
+
+# Database username
+rds_username = "postgres"
+
+# Database name
+rds_database_name = "myapp"
+
+# Use Aurora Cluster (true) or standard RDS instance (false)
+rds_use_aurora = true
+
+# Database instance class
+rds_instance_class = "db.t4g.medium"
+
+# Backup retention period in days (1-35)
+rds_backup_retention_period = "7"
+
+# Enable Multi-AZ deployment for high availability
+rds_multi_az = true
+
+# Make database publicly accessible
+rds_publicly_accessible = false
+
+# Aurora database engine (only used when rds_use_aurora = true)
+rds_aurora_engine = "aurora-postgresql"
+
+# Aurora engine version (must match available versions)
+rds_aurora_engine_version = "15.3"
+
+# Aurora parameter group family (must match engine major version)
+rds_aurora_parameter_group_family = "aurora-postgresql15"
+
+# Standard RDS database engine (only used when rds_use_aurora = false)
+rds_instance_engine = "postgres"
+
+# Standard RDS engine version (must match available versions)
+rds_instance_engine_version = "17.2"
+
+# Standard RDS parameter group family (must match engine major version)
+rds_instance_parameter_group_family = "postgres17"

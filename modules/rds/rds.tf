@@ -13,7 +13,7 @@ resource "aws_db_instance" "standard" {
   vpc_security_group_ids  = [aws_security_group.rds.id]
   multi_az                = var.multi_az
   publicly_accessible     = var.publicly_accessible
-  backup_retention_period = var.backup_retention_period
+  backup_retention_period = var.backup_retention_period != "" ? tonumber(var.backup_retention_period) : 7
   parameter_group_name    = aws_db_parameter_group.standard[0].name
   skip_final_snapshot     = true # For production, set to false and provide final_snapshot_identifier
   tags                    = var.tags
@@ -24,7 +24,7 @@ resource "aws_db_parameter_group" "standard" {
   count       = var.use_aurora ? 0 : 1
   name        = "${var.name}-rds-params"
   family      = var.parameter_group_family_rds
-  description = "Standard RDS PG for ${var.name}"
+  description = "Standard RDS PG for ${var.name} with basic parameters (max_connections, log_statement, work_mem)"
 
   dynamic "parameter" {
     for_each = var.parameters

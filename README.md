@@ -20,8 +20,8 @@ This file can contain the following variables:
 ```hcl
 github_repo_url = "https://github.com/<github_username>/<project_name>.git"
 github_branch = "main"
-github_username = "github_username"
-github_token = "pat_token"
+github_user = "github_username"
+github_pat = "pat_token"
 
 rds_password = "password_for_rds_db"
 rds_publicly_accessible = true

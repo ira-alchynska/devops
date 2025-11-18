@@ -124,16 +124,15 @@ module "rds" {
   aurora_instance_count = 2
   vpc_cidr_block        = module.vpc.vpc_cidr_block
 
-  # --- Aurora-only ---
-  engine_cluster                = var.rds_aurora_engine
-  engine_version_cluster        = var.rds_aurora_engine_version
+  # Engine and version (unified for both RDS and Aurora)
+  # For RDS: use "postgres", "mysql", etc.
+  # For Aurora: use "aurora-postgresql", "aurora-mysql", etc.
+  engine                     = var.rds_use_aurora ? var.rds_aurora_engine : var.rds_instance_engine
+  engine_version             = var.rds_use_aurora ? var.rds_aurora_engine_version : var.rds_instance_engine_version
+  
+  # Parameter group families
   parameter_group_family_aurora = var.rds_aurora_parameter_group_family
-
-
-  # --- RDS-only ---
-  engine                     = var.rds_instance_engine
-  engine_version             = var.rds_instance_engine_version
-  parameter_group_family_rds = var.rds_instance_parameter_group_family
+  parameter_group_family_rds    = var.rds_instance_parameter_group_family
 
   # Common
   instance_class          = var.rds_instance_class
