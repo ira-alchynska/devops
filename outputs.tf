@@ -93,6 +93,11 @@ output "jenkins_namespace" {
   value       = module.jenkins.jenkins_namespace
 }
 
+output "github_user" {
+  description = "GitHub user"
+  value       = var.github_user
+}
+
 #-------------ArgoCD-----------------
 
 output "argocd_namespace" {
@@ -108,4 +113,11 @@ output "argocd_server_service" {
 output "argocd_admin_password" {
   description = "Initial admin password"
   value       = module.argo_cd.admin_password
+}
+
+#-------------RDS-----------------
+
+output "rds_endpoint" {
+  description = "RDS endpoint for connecting to the database"
+  value       = module.rds.rds_endpoint
 }

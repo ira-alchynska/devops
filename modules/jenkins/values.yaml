@@ -1,10 +1,10 @@
 controller:
   admin:
     username: admin
-    password: admin123
+    password: admin123        # ← consider a Secret instead
 
   serviceType: LoadBalancer
-  servicePort: 80
+  servicePort: 80             # external LB port
   service:
     port: 80
     targetPort: 8080
@@ -33,99 +33,15 @@ controller:
     - docker-workflow:latest
     - job-dsl:latest
 
-  initScripts:
-    - |
-      import javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration
-      import jenkins.model.Jenkins
-      
-      Jenkins jenkins = Jenkins.getInstance()
-      GlobalJobDslSecurityConfiguration config = GlobalJobDslSecurityConfiguration.get()
-      config.useScriptSecurity = false
-      config.save()
-      jenkins.save()
-
   serviceAccount:
     name: jenkins-sa
     create: false
 
-  env:
-    - name: ECR_REPOSITORY_URL
-      value: "${ecr_repository_url}"
-    - name: GITHUB_REPO_URL
-      value: "${github_repo_url}"
-
   JCasC:
     configScripts:
-      kubernetes-cloud: |
-        jenkins:
-          clouds:
-            - kubernetes:
-                name: "kubernetes"
-                serverUrl: ""
-                namespace: "jenkins"
-                jenkinsUrl: "http://jenkins:8080"
-                jenkinsTunnel: "jenkins-agent:50000"
-                containerCap: 10
-                maxRequestsPerHost: 32
-                retentionTimeout: 5
-                connectTimeout: 10
-                readTimeout: 15
-                credentialsId: ""
-                serverCertificate: ""
-                skipTlsVerify: false
-      global-properties: |
-        jenkins:
-          globalNodeProperties:
-            - envVars:
-                env:
-                  - key: "ECR_REPOSITORY_URL"
-                    value: "${ecr_repository_url}"
-                  - key: "GITHUB_REPO_URL"
-                    value: "${github_repo_url}"
-      credentials: |
-        credentials:
-          system:
-            domainCredentials:
-              - credentials:
-                  - usernamePassword:
-                      scope: GLOBAL
-                      id: github-token
-                      username: ${github_user}
-                      password: ${github_pat}
-                      description: GitHub PAT
-      seed-job: |
-        jobs:
-          - script: >
-              job('seed-job') {
-                description('Job to generate pipeline for Django project')
-                scm {
-                  git {
-                    remote {
-                      url('${github_repo_url}')
-                      credentials('github-token')
-                    }
-                    branches('*/lesson-8-9')
-                  }
-                }
-                steps {
-                  dsl {
-                    text('''
-                      pipelineJob("goit-django-docker") {
-                        definition {
-                          cpsScm {
-                            scm {
-                              git {
-                                remote {
-                                  url("${github_repo_url}")
-                                  credentials("github-token")
-                                }
-                                branches("*/lesson-8-9")
-                              }
-                            }
-                          }
-                        }
-                      }
-                    ''')
-                  }
-                }
-              }
+      script-approval: |
+        unclassified:
+          scriptApproval:
+            approvedSignatures:
+              - "new javaposse.jobdsl.dsl.DslScriptLoader java.lang.String java.lang.ClassLoader"
+              - "method org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition create org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition"
