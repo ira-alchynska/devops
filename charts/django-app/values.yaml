@@ -26,5 +26,8 @@ postgresql:
     postgresPassword: "postgres"
     database: "myapp"
     username: "postgres"
-  # Remove image override - let chart use default
-  # The chart version 16.7.15 should have a compatible default image
+  # Specify a known working PostgreSQL 15 image
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: "15.4.0-debian-12-r0"
