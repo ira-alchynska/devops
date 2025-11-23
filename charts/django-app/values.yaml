@@ -27,6 +27,4 @@ postgresql:
     database: "myapp"
     username: "postgres"
   image:
-    registry: docker.io
-    repository: bitnami/postgresql
-    tag: "16.2.0"  # PostgreSQL 16 image tag
+    tag: "16.1.0"
