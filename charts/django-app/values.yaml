@@ -27,4 +27,6 @@ postgresql:
     database: "myapp"
     username: "postgres"
   image:
-    tag: "16.1.0"
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: "16.1.0-debian-12-r0"
