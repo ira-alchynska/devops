@@ -19,7 +19,7 @@ variable "node_subnet_ids" {
 
 variable "node_group_name" {
   description = "Name of the node group"
-  default     = "node-group-alex"
+  default     = "node-group-ira"
 }
 
 variable "instance_type" {

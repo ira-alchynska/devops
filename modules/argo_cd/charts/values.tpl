@@ -4,9 +4,9 @@ argocd-apps:
       namespace: argocd
       project: default
       source:
-        repoURL: https://github.com/Sysqwerty/devops.git
+        repoURL: https://github.com/ira-alchynska/devops.git
         path: charts/django-app
-        targetRevision: lesson-10
+        targetRevision: final-project
         helm:
           valueFiles:
             - values.yaml
@@ -26,7 +26,7 @@ argocd-apps:
 
   repositories:
     example-app:
-      url: https://github.com/Sysqwerty/devops.git
+      url: https://github.com/ira-alchynska/devops.git
 
   repoConfig:
     insecure: "true"

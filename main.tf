@@ -44,11 +44,11 @@ provider "aws" {
 }
 
 # Підключаємо модуль для S3 та DynamoDB
-#module "s3_backend" {
-#  source      = "./modules/s3-backend"
-#  bucket_name = var.bucket_name
-#  table_name  = var.table_name
-#}
+module "s3_backend" {
+  source      = "./modules/s3-backend"
+  bucket_name = var.bucket_name
+  table_name  = var.table_name
+}
 
 # Підключаємо модуль для VPC
 module "vpc" {

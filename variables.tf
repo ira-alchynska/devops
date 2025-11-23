@@ -1,7 +1,7 @@
 variable "bucket_name" {
   description = "The name of the S3 bucket for Terraform state"
   type        = string
-  default     = "terraform-state-bucket-18062025214500-alex"
+  default     = "terraform-state-bucket-18062025214500-ira"
 
 }
 
@@ -14,7 +14,7 @@ variable "table_name" {
 variable "name" {
   description = "The name of the project"
   type        = string
-  default     = "django-app-alex"
+  default     = "django-app-ira"
 }
 
 variable "region" {
