@@ -1,29 +1,11 @@
-# Terraform
-*.tfstate
-*.tfstate.*
-*.tfvars
-!terraform.tfvars.example
-.terraform/
-.terraform.lock.hcl
-crash.log
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
-
-# Sensitive files
-terraform.tfvars
-*.pem
-*.key
-
 # IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
+/.idea
+.vscode
 
-# OS
-.DS_Store
-Thumbs.db
+.env
 
+# Terraform
+.terraform/
+*.tfvars
+*terraform.tfstate*
+.terraform.lock.hcl

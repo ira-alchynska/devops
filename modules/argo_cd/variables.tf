@@ -16,24 +16,20 @@ variable "chart_version" {
   default     = "5.46.4"
 }
 
-variable "github_repo_url" {
-  description = "GitHub repository URL for Argo CD to monitor"
+variable "rds_username" {
+  description = "Ім'я користувача для RDS"
   type        = string
 }
-
-variable "github_user" {
-  description = "GitHub username for repository access"
+variable "rds_db_name" {
+  description = "Назва бази даних для RDS"
   type        = string
 }
-
-variable "github_pat" {
-  description = "GitHub Personal Access Token"
+variable "rds_password" {
+  description = "Пароль для RDS"
   type        = string
   sensitive   = true
 }
-
-variable "app_target_revision" {
-  description = "Git branch/tag for Argo CD application"
+variable "rds_endpoint" {
+  description = "Endpoint для RDS"
   type        = string
-  default     = "lesson-8-9"
 }

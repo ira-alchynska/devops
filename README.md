@@ -1,97 +1,109 @@
-# Steps
+# Project goal
 
-!!! Make sure you have installed `Terraform` and `Helm` on your system.
+Build and deploy a complete DevOps infrastructure on AWS using Terraform, including the following components:
 
-## Terraform
+- Deploy a Kubernetes cluster (EKS) with CI/CD support
+- Integrate Jenkins to automate build and deployment
+- Install Argo CD for application management
+- Configure a database (RDS or Aurora)
+- Organize a container registry (ECR)
+- Monitoring with Prometheus and Grafana
 
-Initialize Terraform:
-```bash
+# Table of contents
+
+- [Technical Details](#technical-details)
+- [Prerequisites](#prerequisites)
+- [Set up the environment](#set-up-the-environment)
+- [Deploy application](#deploy-application)
+- [Destroy the environment](#destroy-the-environment)
+
+## Technical Details
+
+`Infrastructure`: AWS using Terraform
+
+`Components`: VPC, EKS, RDS, ECR, Jenkins, Argo CD, Prometheus, Grafana
+
+## Prerequisites
+
+- AWS CLI installed and configured
+- kubectl installed
+- Helm installed
+- Docker installed
+- Terraform installed
+
+Optionally, you can add `terraform.tfvars` file to the root directory of the project.
+
+This file can contain the following variables:
+
+```hcl
+github_repo_url = "https://github.com/<github_username>/<project_name>.git"
+github_branch = "main"
+github_username = "github_username"
+github_token = "pat_token"
+
+rds_password = "password_for_rds_db"
+rds_publicly_accessible = true
+rds_use_aurora = true
+rds_multi_az = false
+rds_backup_retention_period = "0"
+```
+
+## Set up the environment
+
+For this task, we will use an EKS cluster in the `eu-central-1` region.
+
+```sh
 terraform init
-```
-
-Перевірка змін:
-```bash
 terraform plan
-```
-
-Застосування змін:
-```bash
 terraform apply
 ```
 
-Завантажити django image на новостворений ECR-репозиторій:
+## Deploy application
 
-```bash
-docker tag django_image:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
-docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
+Now that the environment is set up, you can proceed with the rest of the tasks.
+
+Connect kubectl to your cluster:
+```sh
+aws eks update-kubeconfig --region eu-central-1 --name <your_cluster_name>
 ```
 
-where `django_image:latest` your django image name that already exists in your local machine.
-
-Replace $AWS_ACCOUNT_ID, $AWS_REGION, and $ECR_REPOSITORY with your own values.
-
-## Helm
-
-Застосування Helm:
-
-```bash
-cd charts/django-app
-helm install my-django .
+Check the services in the cluster:
+```sh
+kubectl get svc -A
 ```
 
-where `my-django` is your helm chart name.
+URL to created resources can be found in LoadBalancer URL.
 
-# Видалення ресурсів:
+Example:
+![img.png](data/img.png)
 
-Kubernetes (PODs, Services, Deployments etc.)
-```bash
-helm uninstall my-django
-```
+Open Jenkins LoadBalancer URL (username: admin; password: admin123)
+- Run the `seed-job` job (that will create new job `django-docker`)
+- Run the `django-docker` job
 
-where `my-django` is your helm chart name.
+Second job will:
+- Build and push Docker image to ECR
+- Merge MR in your repo with updating the app version (according to the Jenkins `django-docker` job build number)
 
-Terraform (EKS, VPC, ECR etc.)
+![img2.png](data/img2.png)
 
-```bash
+Open Argo CD LoadBalancer URL
+- check the status of `example-app` application (should be `Healthy` and `Synced`)
+
+![img3.png](data/img3.png)
+
+## Monitoring
+
+- forward Grafana port using the next command
+- - `kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3000:80`
+- open URL http://localhost:3000
+- login with username `admin` and password from the next command
+- - `kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 --decode`
+- check existing dashboards to see the CPU and Memory usage (PODs, Nodes etc.)
+
+![img4.png](data/img4.png)
+
+## Destroy the environment
+```sh
 terraform destroy
 ```
-
-# Додаткова інформація:
-
-Якщо ви хочете оновити helm chart:
-
-```bash
-helm upgrade my-django .
-```
-
-Якщо ви хочете оновити terraform:
-
-```bash
-terraform init -upgrade
-terraform plan
-terraform apply
-```
-
-# Опис модулів terraform
-
-## s3-backend
-
-Модуль для створення S3-бакета для збереження стейтів.
-В модулі створюється S3-бакет, налаштовується версіонування та контроль власності.
-Також створюється DynamoDB-таблиця для блокування стейтів.
-
-## vpc
-
-Модуль для створення VPC.
-В модулі встановлена VPC, публічні підмережі, приватні підмережі та зони доступності.
-Також створюється NAT Gateway, Internet Gateway та таблиці роутів для доступу до інтернету.
-
-## ecr
-
-Модуль для створення ECR-репозиторію.
-В модулі створюється репозиторій ECR, налаштовується автоматичне сканування security-вразливостей під час push.
-
-## eks
-
-Модуль для створення EKS-кластера.
-В модулі створюється EKS-кластер, налаштовується автоматичне сканування security-вразливостей під час push.
