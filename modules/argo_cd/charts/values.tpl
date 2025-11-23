@@ -12,10 +12,10 @@ argocd-apps:
             - values.yaml
           values: |
             config:
-              POSTGRES_HOST: "${rds_host}"
-              POSTGRES_USER: "${rds_username}"
-              POSTGRES_NAME: "${rds_db_name}"
-              POSTGRES_PASSWORD: "${rds_password}"
+              POSTGRES_HOST: "example-app-postgresql"
+              POSTGRES_USER: "postgres"
+              POSTGRES_NAME: "myapp"
+              POSTGRES_PASSWORD: "postgres"
       destination:
         server: https://kubernetes.default.svc
         namespace: default

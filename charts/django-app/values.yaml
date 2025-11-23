@@ -12,13 +12,18 @@ ingress:
   enabled: false
 
 config:
-  # These values will be overridden by Argo CD with RDS connection details
-  POSTGRES_HOST: ""      # Will be set by Argo CD from RDS endpoint
+  # Using local PostgreSQL - service name will be example-app-postgresql
+  POSTGRES_HOST: "example-app-postgresql"  # Local PostgreSQL service
   POSTGRES_PORT: "5432"
-  POSTGRES_NAME: ""      # Will be set by Argo CD (rds_db_name)
-  POSTGRES_USER: ""      # Will be set by Argo CD (rds_username)
-  POSTGRES_PASSWORD: ""  # Will be set by Argo CD (rds_password)
+  POSTGRES_NAME: "myapp"      # Database name from postgresql config
+  POSTGRES_USER: "postgres"   # Username from postgresql config
+  POSTGRES_PASSWORD: "postgres"  # Password from postgresql config
 
-# Local PostgreSQL is disabled - using RDS instead
+# Local PostgreSQL configuration
 postgresql:
-  enabled: false
+  enabled: true
+  auth:
+    postgresPassword: "postgres"
+    database: "myapp"
+    username: "postgres"
+  # Use default image from chart - will use compatible PostgreSQL 16 image
