@@ -26,7 +26,8 @@ postgresql:
     postgresPassword: "postgres"
     database: "myapp"
     username: "postgres"
+  # Try using a known working PostgreSQL 15 image
   image:
     registry: docker.io
     repository: bitnami/postgresql
-    tag: "16.1.0-debian-12-r0"
+    tag: "15.5.0"
