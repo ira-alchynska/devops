@@ -59,29 +59,29 @@ This infrastructure implements a complete CI/CD pipeline on AWS with Kubernetes 
 │  │  │  └────────────┘  │         │  └────────────┘  │       │   │
 │  │  └──────────────────┘         └──────────────────┘       │   │
 │  │                                                          │   │
-│  │  ┌──────────────────────────────────────────────────────┐  │   │
-│  │  │              Kubernetes Cluster (EKS)                 │  │   │
-│  │  │                                                       │  │   │
+│  │  ┌────────────────────────────────────────────────────┐  │   │
+│  │  │              Kubernetes Cluster (EKS)              │  │   │
+│  │  │                                                    │  │   │
 │  │  │  ┌──────────┐  ┌──────────┐  ┌──────────────┐      │  │   │
 │  │  │  │ Jenkins  │  │ Argo CD  │  │ Monitoring   │      │  │   │
 │  │  │  │ (CI/CD)  │  │ (GitOps) │  │ (Prometheus/ │      │  │   │
 │  │  │  │          │  │          │  │  Grafana)    │      │  │   │
 │  │  │  └──────────┘  └──────────┘  └──────────────┘      │  │   │
-│  │  │                                                       │  │   │
-│  │  │  ┌──────────────────────────────────────────────┐    │  │   │
-│  │  │  │         Django Application                   │    │  │   │
-│  │  │  │  - Deployment with HPA (1-3 replicas)        │    │  │   │
-│  │  │  │  - Resource requests/limits                  │    │  │   │
-│  │  │  │  - ConfigMap for environment variables       │    │  │   │
-│  │  │  └──────────────────────────────────────────────┘    │  │   │
-│  │  └──────────────────────────────────────────────────────┘  │   │
+│  │  │                                                    │  │   │
+│  │  │  ┌──────────────────────────────────────────────┐  │  │   │
+│  │  │  │         Django Application                   │  │  │   │
+│  │  │  │  - Deployment with HPA (1-3 replicas)        │  │  │   │
+│  │  │  │  - Resource requests/limits                  │  │  │   │
+│  │  │  │  - ConfigMap for environment variables       │  │  │   │
+│  │  │  └──────────────────────────────────────────────┘  │  │   │
+│  │  └────────────────────────────────────────────────────┘  │   │
 │  └──────────────────────────────────────────────────────────┘   │
-│                                                                   │
+│                                                                 │
 │  ┌──────────────────┐         ┌──────────────────┐              │
-│  │  ECR Repository  │         │  S3 Backend       │              │
-│  │  (Docker Images) │         │  (Terraform State)│              │
+│  │  ECR Repository  │         │  S3 Backend       │             │
+│  │  (Docker Images) │         │  (Terraform State)│             │
 │  └──────────────────┘         └──────────────────┘              │
-│                                                                   │
+│                                                                 │
 └─────────────────────────────────────────────────────────────────┘
          │                    │
          │                    │
@@ -241,11 +241,75 @@ See `terraform.tfvars.example` for a complete list of available configuration op
 
 For this task, we will use an EKS cluster in the `eu-central-1` region.
 
+### Initial Setup: S3 Backend Configuration
+
+**Important**: If this is your first deployment and the S3 backend bucket doesn't exist yet, you need to create it first before using it as a Terraform backend.
+
+#### Step 1: Comment Out Backend Block
+
+Temporarily comment out the backend configuration in `backend.tf` to allow Terraform to create the S3 bucket and DynamoDB table:
+
+```terraform
+# terraform {
+#   backend "s3" {
+#     bucket         = "terraform-state-bucket-18062025214500-ira"
+#     key            = "terraform.tfstate"
+#     region         = "eu-central-1"
+#     dynamodb_table = "terraform-locks"
+#     encrypt        = true
+#   }
+# }
+```
+
+#### Step 2: Create S3 Backend Resources
+
+Apply Terraform to create only the S3 backend resources:
+
 ```sh
 terraform init
+terraform apply -target=module.s3_backend
+```
+
+This creates:
+- S3 bucket for Terraform state storage
+- DynamoDB table for state locking
+
+#### Step 3: Uncomment Backend Block
+
+Uncomment the backend block in `backend.tf`:
+
+```terraform
+terraform {
+  backend "s3" {
+    bucket         = "terraform-state-bucket-18062025214500-ira"
+    key            = "terraform.tfstate"
+    region         = "eu-central-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+}
+```
+
+#### Step 4: Migrate State to S3
+
+Migrate your local Terraform state to the S3 backend:
+
+```sh
+terraform init -migrate-state
+```
+
+When prompted, type `yes` to confirm the migration.
+
+#### Step 5: Deploy Full Infrastructure
+
+Now you can deploy the complete infrastructure:
+
+```sh
 terraform plan
 terraform apply
 ```
+
+**Note**: After the initial setup, you can use `terraform init`, `terraform plan`, and `terraform apply` normally. The backend will already exist and Terraform will use it automatically.
 
 ## Deploy application
 
