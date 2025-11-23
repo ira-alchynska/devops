@@ -26,4 +26,7 @@ postgresql:
     postgresPassword: "postgres"
     database: "myapp"
     username: "postgres"
-  # Use default image from chart - will use compatible PostgreSQL 16 image
+  image:
+    registry: docker.io
+    repository: bitnami/postgresql
+    tag: "16.2.0"  # PostgreSQL 16 image tag
