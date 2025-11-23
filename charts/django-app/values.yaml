@@ -20,5 +20,5 @@ config:
   POSTGRES_PASSWORD: ""  # Will be set by Argo CD (rds_password)
 
 # Local PostgreSQL is disabled - using RDS instead
-# postgresql:
-#   enabled: false
+postgresql:
+  enabled: false
